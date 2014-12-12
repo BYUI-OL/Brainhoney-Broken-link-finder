@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F31B6EE-6E0F-4514-961A-CB847C05BCE8}</ProjectGuid>
+    <ProjectGuid>{18E81949-1791-48DC-96CF-2D260E2B600D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BrokenLinkFinder</RootNamespace>
