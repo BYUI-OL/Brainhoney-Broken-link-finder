@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("BrokenLinkFinder")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Brigham Young University Idaho")]
 [assembly: AssemblyProduct("BrokenLinkFinder")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © Brigham Young University Idaho 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b0bdcd9f-16f7-43c0-a1e3-a0690fc87f0f")]
+[assembly: Guid("4e1e6d4e-dcfc-4491-b1ba-00d5ba63ab1c")]
 
 // Version information for an assembly consists of the following four values:
 //

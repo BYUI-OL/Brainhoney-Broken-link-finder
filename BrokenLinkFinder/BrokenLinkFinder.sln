@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokenLinkFinder", "BrokenLinkFinder\BrokenLinkFinder.csproj", "{18E81949-1791-48DC-96CF-2D260E2B600D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokenLinkFinder", "BrokenLinkFinder\BrokenLinkFinder.csproj", "{FC563C36-EEB7-44DA-A8B1-DBB16A801F01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{18E81949-1791-48DC-96CF-2D260E2B600D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18E81949-1791-48DC-96CF-2D260E2B600D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18E81949-1791-48DC-96CF-2D260E2B600D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18E81949-1791-48DC-96CF-2D260E2B600D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC563C36-EEB7-44DA-A8B1-DBB16A801F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC563C36-EEB7-44DA-A8B1-DBB16A801F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC563C36-EEB7-44DA-A8B1-DBB16A801F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC563C36-EEB7-44DA-A8B1-DBB16A801F01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
