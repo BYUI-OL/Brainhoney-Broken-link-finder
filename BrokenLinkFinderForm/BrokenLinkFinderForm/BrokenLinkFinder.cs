@@ -7,6 +7,7 @@ using DLAP;
 using System.Xml.Linq;
 using System.Xml;
 using CsQuery;
+using System.Net;
 
 namespace BrokenLinkFinder
 {
@@ -17,7 +18,7 @@ namespace BrokenLinkFinder
         private bool _isAuthenticated = false; // Default is false
         private XmlNodeList _resourceList;
         private XmlNodeList _itemList;
-        
+
         /// <summary>
         /// Constructor, pass the course id
         /// </summary>
@@ -37,13 +38,17 @@ namespace BrokenLinkFinder
         /// <returns></returns>
         public bool Authenticate(string prefix, string username, string password)
         {
-            XElement result = Verify(_session.Login(prefix, username, password)); // Call the Dlap built in login method
-            if (result != null)
+            
+            try
             {
+                XElement result = Verify(_session.Login(prefix, username, password)); // Call the Dlap built in login method
                 _isAuthenticated = true;
                 return true;
             }
-            return false;
+            catch (DlapException e) // Throw the exception right up the chain
+            {
+                throw e;
+            }
         }
 
         /// <summary>
@@ -52,7 +57,7 @@ namespace BrokenLinkFinder
         /// <returns></returns>
         public XmlDocument Start()
         {
-            if (_isAuthenticated) // If the user is not authenticated
+            if (!_isAuthenticated) // If the user is not authenticated
             {
                 throw new DlapException("Unable to authenticate");
             }
@@ -68,7 +73,7 @@ namespace BrokenLinkFinder
                  */
                 XmlDocument returnDoc = new XmlDocument();
                 XmlElement linksNode = returnDoc.CreateElement("links");
-                
+
                 XmlDocument itemDoc = GetItemList().Convert(); // Convert is the extension below
                 _itemList = itemDoc.SelectNodes("//item"); // get a list of the item nodes
                 if (_itemList.Count <= 0) // If there aren't any course items available
@@ -117,11 +122,17 @@ namespace BrokenLinkFinder
         private List<Link> TestLinks(Parsed links)
         {
             List<Link> broken = new List<Link>();
+            int count = 0;
             foreach (Link link in links.links)
             {
-                if (link.type == LinkType.EXTERNAL) // ping
+                if (link.type == LinkType.EXTERNAL) // status code
                 {
-                    broken.Add(link); // pop
+                    Link one = link;
+                    one.status = GetStatus(link.href);
+                    if (one.status == 301 || one.status == 308 || one.status >= 400)
+                    {
+                        broken.Add(one);
+                    }
                 }
                 else if (link.type == LinkType.ITEM) // check items
                 {
@@ -132,25 +143,77 @@ namespace BrokenLinkFinder
                 }
                 else if (link.type == LinkType.RESOURCE) // check if in resource list
                 {
-                    broken.Add(link); // pop
+                    if (!checkResourceList(link.href))
+                    {
+                        broken.Add(link);
+                    }
                 }
                 else
                 {
                     throw new DlapException("Corrupted html page");
                 }
+                count++;
             }
             return broken;
         }
 
+        /// <summary>
+        /// Get status codes
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private int GetStatus(string url)
+        {
+            HttpStatusCode result = default(HttpStatusCode);
+
+            var request = HttpWebRequest.Create(url);
+            request.Method = "HEAD";
+            using (var response = request.GetResponse() as HttpWebResponse)
+            {
+                if (response != null)
+                {
+                    result = response.StatusCode;
+                    response.Close();
+                }
+            }
+
+            return (int)result;
+        }
+
+        /// <summary>
+        /// Check for the internal links
+        /// </summary>
+        /// <param name="href"></param>
+        /// <returns></returns>
         private bool CheckItemList(string href)
         {
-            if (href.Contains("(") && href.Contains(")"))
-            {
-                string split = href.Split('(')[1].Split(')')[0];
-                split.Replace("'", "");
-                split.Replace("\"", "");
+           foreach (XmlNode item in _itemList)
+           {
+               if (href.Contains(item.GetAttribute("id")))
+               {
+                   return true;
+               }
+           }
 
+            return false;
+        }
+
+        /// <summary>
+        /// Check to see if resource is still in course
+        /// </summary>
+        /// <param name="href"></param>
+        /// <returns></returns>
+        private bool checkResourceList(string href)
+        {
+            string modifiedHref = href.Remove(0, 4);
+            foreach (XmlNode resource in _resourceList)
+            {
+                if (resource.GetAttribute("path") == modifiedHref)
+                {
+                    return true;
+                }
             }
+
             return false;
         }
 
@@ -249,14 +312,14 @@ namespace BrokenLinkFinder
         private Parsed ParseHtml(string html)
         {
             Parsed parsed = new Parsed();
+            parsed.links = new List<Link>();
             parsed.doc = html;
             return parsed;
         }
 
         private string GetHtml(string href)
         {
-            XElement result = Verify(_session.Get("getresource", new string[] { "entityid", _courseId, "path", href }));
-            return result.ToString();
+            return _session.Get2("getresource", new string[] { "entityid", _courseId, "path", href });
         }
 
         /// <summary>
